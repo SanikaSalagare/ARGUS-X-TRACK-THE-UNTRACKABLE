@@ -100,36 +100,69 @@ The Analytics page summarizes session-level identity and detection information a
 
 ---
 
-## System architecture
+                         ARGUS-X SYSTEM ARCHITECTURE
 
-The following diagram describes the logical processing flow and the major responsibilities documented for the project. It is a high-level architecture view, not a claim that every box is implemented as an independent service.
-
-```mermaid
-flowchart TD
-    A["Input sources<br/>Uploaded video / local camera"] --> B["Streamlit frontend<br/>Video & Camera / Live Tracking"]
-    B --> C["Processing configuration<br/>Confidence · image size · classes · tracker"]
-    C --> D["Video frame reader"]
-    D --> E["YOLO26n detector<br/>Object detections + confidence"]
-    E --> F["ByteTrack<br/>Short-term track association"]
-    F --> G["ARGUS Engine"]
-    G --> H["Track confirmation<br/>Require N observed frames"]
-    H --> I["Identity matching"]
-    I --> J{"Plausible existing identity?"}
-    J -->|Yes| K["Recover existing ARGUS ID"]
-    J -->|No / uncertain| L["Create a new ARGUS ID"]
-    K --> M["Identity memory & lifecycle"]
-    L --> M
-    M --> N["Database / session records"]
-    M --> O["Track history & identity events"]
-    O --> P["Video overlays / preview"]
-    N --> Q["Object Manager"]
-    N --> R["Identity History"]
-    N --> S["Analytics"]
-    P --> T["Processed output / dashboard"]
-    Q --> T
-    R --> T
-    S --> T
-```
+ [Uploaded video / Local camera]
+                |
+                v
+       [Streamlit Frontend]
+     Video & Camera / Live Tracking
+                |
+                v
+    [Processing Configuration]
+ Confidence | Image size | Classes | Tracker
+                |
+                v
+       [Video Frame Reader]
+                |
+                v
+         [YOLO26n Detector]
+       Object detections + confidence
+                |
+                v
+            [ByteTrack]
+       Short-term track association
+                |
+                v
+          [ARGUS Engine]
+                |
+                v
+        [Track Confirmation]
+       Require N observed frames
+                |
+                v
+        [Identity Matching]
+                |
+                v
+     +---------------------------+
+     | Plausible existing ID?    |
+     +---------------------------+
+            /             \
+          YES              NO / UNCERTAIN
+           |                    |
+           v                    v
+ [Recover existing ARGUS ID] [Create new ARGUS ID]
+           |                    |
+           +----------+---------+
+                      |
+                      v
+          [Identity Memory & Lifecycle]
+                      |
+             +--------+--------+
+             |                 |
+             v                 v
+ [Database / Session Records] [Track History & Events]
+             |                 |
+       +-----+------+          v
+       |     |      |    [Video Overlays / Preview]
+       v     v      v             |
+ [Object  [Identity [Analytics]   |
+ Manager]  History]               |
+       |     |      |             |
+       +-----+------+-------------+
+                      |
+                      v
+          [Processed Output / Dashboard]
 
 ### Architecture layers
 
