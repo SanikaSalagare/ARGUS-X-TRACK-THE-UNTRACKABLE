@@ -1,0 +1,9 @@
+ultralytics
+opencv-python
+numpy
+scipy
+pandas
+plotly
+streamlit>=1.40,<1.50
+imageio-ffmpeg
+# Install PyTorch with CUDA separately (see README)
