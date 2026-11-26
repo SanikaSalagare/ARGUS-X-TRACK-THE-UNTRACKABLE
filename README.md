@@ -78,13 +78,16 @@ The screenshots below are from the running ARGUS-X Streamlit interface. They sho
 
 The dashboard summarizes identity counts, processing sessions, recent activity, and system information.
 
-![ARGUS-X Dashboard](docs/images/dashboard.png)
+![ARGUS-X Dashboard](<img width="1906" height="971" alt="analytics" src="https://github.com/user-attachments/assets/716a22c0-9d17-4d9c-ba73-148ec84dff6c" />
+)
+
 
 ### Video & Camera
 
 The Video & Camera page provides video upload and processing controls, including confidence threshold, image size, frame limit, object classes, and appearance re-identification options.
 
-![ARGUS-X Video and Camera](docs/images/video-camera.png)
+![ARGUS-X Video and Camera](<img width="1917" height="976" alt="• video-camera" src="https://github.com/user-attachments/assets/8dfe9295-73ee-4965-826f-ee808fba253d" />
+)
 
 ### Object Manager
 
