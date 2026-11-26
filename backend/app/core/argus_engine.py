@@ -142,22 +142,37 @@ class ArgusEngine:
         rec["trail"].append((int((box[0] + box[2]) / 2), int(box[3])))
 
     def _match(self, e, cls, box, active):
-        """Compare a confirmed new tracker with identities that disappeared recently."""
+        """Match identities using the average of the three best gallery similarities."""
         cands = []
+
         for no, rec in self.ids.items():
             gap = self.frame - rec["last"]
+
             if no in active or rec["cls"] != cls or gap < 1 or not rec["gallery"]:
                 continue
-            if gap > min(self.archive_after, self.reid_window) or not self._plausible(rec, box, gap):
+
+            if gap > min(self.archive_after, self.reid_window):
                 continue
-            cands.append((max(float(np.dot(g, e)) for g in rec["gallery"]), no))
+
+            if not self._plausible(rec, box, gap):
+                continue
+
+            similarities = sorted(
+                (float(np.dot(g, e)) for g in rec["gallery"]),
+                reverse=True
+            )
+            score = float(np.mean(similarities[:3]))
+            cands.append((score, no))
+
         cands.sort(reverse=True)
+
         if not cands or cands[0][0] < self.reid_thr:
             return None
-        if len(cands) > 1 and cands[0][0] - cands[1][0] < 0.03:  # ambiguous -> do not guess
-            return "uncertain", cands[0][0], cands[0][1]
-        return "match", cands[0][0], cands[0][1]
 
+        if len(cands) > 1 and cands[0][0] - cands[1][0] < 0.03:
+            return "uncertain", cands[0][0], cands[0][1]
+
+        return "match", cands[0][0], cands[0][1]
     def _absorb(self, rec, p, tid):
         """Attach the frames seen during confirmation to the identity."""
         for _, b in p["boxes"]:
